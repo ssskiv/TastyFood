@@ -8,9 +8,9 @@
 
     <Switch
         android:id="@+id/rb"
-        android:layout_width="80dp"
+        android:layout_width="75dp"
         android:layout_height="40dp"
-        android:layout_marginEnd="15dp"
+        android:layout_marginEnd="10dp"
         app:layout_constraintBottom_toBottomOf="@id/tv"
         app:layout_constraintEnd_toStartOf="@id/tv"
         app:layout_constraintTop_toTopOf="@id/tv"
@@ -20,6 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="GPS"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="@id/rb"
         app:layout_constraintStart_toStartOf="@id/rb"
         app:layout_constraintTop_toBottomOf="@id/rb"
@@ -32,6 +33,7 @@
         android:layout_marginTop="20dp"
         android:text="Заказов нет"
         android:textSize="40sp"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -46,5 +48,17 @@
         android:text="Открыть в картах"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:ignore="HardcodedText" />
+
+    <ImageButton
+        android:id="@+id/reload_button"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:text="reload"
+        app:layout_constraintStart_toEndOf="@id/tv"
+        android:src="@drawable/ic_baseline_replay_24"
+        android:background="@color/white"
+        app:layout_constraintTop_toTopOf="@id/tv"
+        tools:layout_editor_absoluteX="324dp"
+        tools:layout_editor_absoluteY="42dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

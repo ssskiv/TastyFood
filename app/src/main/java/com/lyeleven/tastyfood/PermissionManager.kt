@@ -110,5 +110,6 @@ class PermissionManager {
         showPermission(appCompatActivity, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
         showPermission(appCompatActivity, Manifest.permission.ACCESS_FINE_LOCATION)
         showPermission(appCompatActivity, Manifest.permission.ACCESS_COARSE_LOCATION)
+        showPermission(appCompatActivity,Manifest.permission.MANAGE_EXTERNAL_STORAGE)
     }
 }

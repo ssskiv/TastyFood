@@ -1,37 +1,34 @@
 package com.lyeleven.tastyfood
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.app.DownloadManager
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.location.Location
-import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.text.InputType
 import android.util.Log
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import java.io.File
-import java.io.File.separatorChar
 import java.io.FileOutputStream
 import java.net.URL
 import java.nio.channels.Channels
+import java.util.concurrent.Executors
 
-
+@RequiresApi(Build.VERSION_CODES.O)
 class MainActivity : AppCompatActivity() {
 
     private var courierNumber: Int = 0
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var isGPSActivated = false
+
+    private val defaultURL = URL("https://127.0.0.1:5501/")
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -39,15 +36,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
         val buttonNavigate = findViewById<Button>(R.id.navigate_button)
         val tv = findViewById<TextView>(R.id.tv)
-        val rb = findViewById<Switch>(R.id.rb)
-
+        val radioButton = findViewById<Switch>(R.id.rb)
+        val reloadButton = findViewById<ImageButton>(R.id.reload_button)
+        Log.d("NET", defaultURL.toString())
         val permissionManager = PermissionManager()
         permissionManager.showLocationPermissions(this)
-        buttonNavigate.isEnabled = rb.isChecked
-        rb.setOnClickListener {
-            isGPSActivated = rb.isChecked/*buttonNavigate.isEnabled = rb.isChecked*/
+        buttonNavigate.isEnabled = radioButton.isChecked
+        radioButton.setOnClickListener {
+            isGPSActivated =
+                radioButton.isChecked/*buttonNavigate.isEnabled = radioButton.isChecked*/
         }
         buttonNavigate.setOnClickListener {
             val intent = Intent(
@@ -61,21 +61,30 @@ class MainActivity : AppCompatActivity() {
         if (sharedPref.getString(getString(R.string.courier_num_key), "0") == "0") {
             enterCourierNumber()
         }
-
-    }
-
-    private fun downloadFile(url: URL, outputFileName: String) {
-        url.openStream().use {
-            Channels.newChannel(it).use { rbc ->
-                FileOutputStream(outputFileName).use { fos ->
-                    fos.channel.transferFrom(rbc, 0, Long.MAX_VALUE)
-                }
-            }
+        reloadButton.setOnClickListener {
+            filterUrl(
+                defaultURL,
+                sharedPref.getString(getString(R.string.courier_num_key), "0")?.toInt()!!
+            )
         }
     }
 
+    private fun downloadFile(url: URL, outputFileName: String) {
+        Log.d("THREAD", "Starting thread.. Trying to connect $url")
+        val request=DownloadManager.Request(Uri.parse(url.toString()))
+            .setTitle("File")
+            .setDescription("Downloading...")
+            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+            .setAllowedOverMetered(true)
+            .setDestinationInExternalFilesDir(this,Environment.DIRECTORY_DOCUMENTS,File.separator+outputFileName)
+            .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI)
+        val dm= getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        Log.d("THREAD", "Trying to download.. Trying to connect $url")
+        dm.enqueue(request)
+    }
+
     private fun filterFile(file: File, courierNumber: Int): Order {
-        var order:Order=Order(0, 0.toString(),"0",0f,0f,0f,0f,)
+        var order: Order = Order(0, 0.toString(), "0", 0f, 0f, 0f, 0f)
         file.forEachLine {
             val list = it.split("&")
             val orderNumber = list[0].toInt()
@@ -93,6 +102,14 @@ class MainActivity : AppCompatActivity() {
         }
         return order
     }
+
+
+    private fun filterUrl(url: URL, courierNumber: Int): Order {
+        var nurl = URL(url.toString() + "variables.txt")
+        downloadFile(nurl, "variables.txt")
+        return  /*Order(0, 0.toString(), "0", 0f, 0f, 0f, 0f)*/filterFile(File(Environment.DIRECTORY_DOCUMENTS+File.separator+"variables.txt"), courierNumber)
+    }
+
 
     private fun enterCourierNumber(): Int {
         val alert = AlertDialog.Builder(this)
