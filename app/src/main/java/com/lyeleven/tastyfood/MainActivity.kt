@@ -23,7 +23,7 @@ import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
     private var stringList: MutableList<MutableList<String>> = mutableListOf(mutableListOf(""))
-    private val string: List<String> = listOf(
+    private val string: MutableList<String> = mutableListOf(
         "1&11290350&На кухне&21.12490599677003&34.86727674147133&81.53111262035883&70.61448415902554&6\n",
         "2&4622733&Обработка&95.32276068333488&41.36679667033229&53.83410922788674&38.87781206937145&11\n",
         "3&5234323&На кухне&12.274724556543081&2.0229787068000493&50.1374812432241&59.340993805150724&12\n",
@@ -151,6 +151,8 @@ class MainActivity : AppCompatActivity() {
         val phoneNumber = findViewById<TextView>(R.id.textView3)
         val status = findViewById<TextView>(R.id.textView)
         val time = findViewById<TextView>(R.id.time)
+        val endOrder = findViewById<Button>(R.id.end_button)
+
         //Log.d("NET", defaultURL.toString())
         val permissionManager = PermissionManager()
         permissionManager.showLocationPermissions(this)
@@ -170,6 +172,8 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        reloadButton.setBackgroundColor(resources.getColor(com.google.android.material.R.color.mtrl_btn_transparent_bg_color))
+
         val sharedPref = this.getPreferences(Context.MODE_PRIVATE) ?: return
         if (sharedPref.getString(getString(R.string.courier_num_key), "0") == "0") {
             enterCourierNumber()
@@ -178,6 +182,8 @@ class MainActivity : AppCompatActivity() {
         reloadButton.setOnClickListener {
             a = mutableListOf(mutableListOf())
             a.removeAt(0)
+            val b:MutableList<MutableList<String>> =mutableListOf(mutableListOf())
+            b.removeAt(0)
             for (i in stringList.indices) {
                 if (stringList[i][2] == "В пути" && stringList[i][7] == sharedPref.getString(
                         getString(R.string.courier_num_key),
@@ -185,15 +191,30 @@ class MainActivity : AppCompatActivity() {
                     ) + "\n"
                 ) {
                     a.add(stringList[i].toMutableList())
+
                 }
             }
-            tv.text = "ЗАКАЗ №${a[0][0]}ПРИНЯТ"
+            if(a!=b){
+            tv.text = "Заказ №${a[0][0]} принят"
             dalt = a[0][3].toDouble()
             dlong = a[0][4].toDouble()
             status.text = a[0][2]
-            time.text = a[0][1]
+            time.text = a[0][1]}else{
+                tv.text="Заказов нет"
+            }
         }
+        endOrder.setOnClickListener {
+            for (i in stringList.indices) {
+                if (stringList[i][2] == "В пути" && stringList[i][7] == sharedPref.getString(
+                        getString(R.string.courier_num_key),
+                        "0"
+                    ) + "\n"
+                ) {
 
+                    stringList[i]= mutableListOf("0","0","0","0","0","0","0","0")
+                }
+            }
+        }
     }
 
     /* private fun downloadFile(url: URL, outputFileName: String) {
