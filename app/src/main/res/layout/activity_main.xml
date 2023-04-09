@@ -21,10 +21,10 @@
         android:layout_height="wrap_content"
         android:text="GPS"
         android:textColor="@color/black"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="@id/rb"
         app:layout_constraintStart_toStartOf="@id/rb"
-        app:layout_constraintTop_toBottomOf="@id/rb"
-        android:textSize="20sp"/>
+        app:layout_constraintTop_toBottomOf="@id/rb" />
 
     <TextView
         android:id="@+id/tv"
@@ -32,8 +32,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="Заказов нет"
-        android:textSize="40sp"
         android:textColor="@color/black"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -53,12 +53,44 @@
         android:id="@+id/reload_button"
         android:layout_width="80dp"
         android:layout_height="80dp"
+        android:background="@color/white"
+        android:src="@drawable/ic_baseline_replay_24"
         android:text="reload"
         app:layout_constraintStart_toEndOf="@id/tv"
-        android:src="@drawable/ic_baseline_replay_24"
-        android:background="@color/white"
         app:layout_constraintTop_toTopOf="@id/tv"
         tools:layout_editor_absoluteX="324dp"
         tools:layout_editor_absoluteY="42dp" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:text="Статус заказа"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv" />
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Time"
+        app:layout_constraintBottom_toTopOf="@id/textView3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="150dp"
+        android:text="Номер телефона клиента:\n7(123)759-99-805"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@id/navigate_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="HardcodedText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
